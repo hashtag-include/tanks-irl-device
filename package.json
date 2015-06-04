@@ -1,0 +1,22 @@
+{
+  "name": "tanks-irl-device",
+  "version": "1.0.0",
+  "description": "tanks in real life",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hashtag-include/tanks-irl-device.git"
+  },
+  "author": "hashtag-include",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hashtag-include/tanks-irl-device/issues"
+  },
+  "homepage": "https://github.com/hashtag-include/tanks-irl-device",
+  "dependencies": {
+    "serialport": "^1.7.4"
+  }
+}
