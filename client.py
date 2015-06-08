@@ -1,3 +1,4 @@
+#!/usr/bin/python
 from socketIO_client import SocketIO, BaseNamespace
 import serial
 import time
@@ -44,7 +45,7 @@ def on_move(self, *args):
     else:
         print 'wtf'
         return
-    time.sleep(.5)
+    time.sleep(.2)
     ser.write('\x89\x00\x00\x80\x00')
 
 def on_exit(self, *args):
