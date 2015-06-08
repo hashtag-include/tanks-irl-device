@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/hashtag-include/tanks-irl-device",
   "dependencies": {
-    "serialport": "^1.7.4"
+    "serialport": "^1.7.4",
+    "sleep": "^2.0.0"
   }
 }
