@@ -55,4 +55,5 @@ def on_exit(self, *args):
 # socketIO = SocketIO('http://localhost', 1337, Namespace)
 socketIO = SocketIO('https://tanks-irl.azurewebsites.net', verify=False)
 socketIO.on('MOVE', on_move)
+socketIO.on('EXIT', on_exit)
 socketIO.wait()
