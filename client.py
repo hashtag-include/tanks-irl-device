@@ -49,7 +49,7 @@ def on_move(self, *args):
         ser.write(const.SEQ_MOVE_RIGHT)
     else:
         return
-    time.sleep(.2)
+    time.sleep(.1)
     ser.write(const.SEQ_MOVE_STOP)
 
 # event when exit command is issued
