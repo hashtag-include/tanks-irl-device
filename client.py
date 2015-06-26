@@ -85,13 +85,13 @@ class CommandControl(BaseNamespace):
 def on_command(self, *args):
     # command issued to the correct player
     if(self['player']['id'] == tankId):
-        if(self['command'] in ('MOVE_UP', 'MOVE_RIGHT', 'MOVE_DOWN', 'MOVE_LEFT')):
+        if(self['command'] in (const.COM_MOVE_UP, const.COM_MOVE_RIGHT, const.COM_MOVE_DOWN, const.COM_MOVE_LEFT)):
             move(self['command'])
-        elif(self['command'] in ('TILT_UP', 'PAN_RIGHT', 'TILT_DOWN', 'PAN_LEFT')):
+        elif(self['command'] in (const.COM_TILT_UP, const.COM_PAN_RIGHT, const.COM_TILT_DOWN, const.COM_PAN_LEFT)):
             aim(self['command'])
-        elif(self['command'] == 'EXIT'):
+        elif(self['command'] == const.COM_EXIT):
             exit(self['command'])
-        elif(self['command'] == 'FIRE'):
+        elif(self['command'] == const.COM_FIRE):
             fire(self['command'])
 
 def on_client_disconnect(self, *args):

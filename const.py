@@ -20,6 +20,18 @@ SEQ_MODE_SAFE = [132]
 SEQ_PLAYER_NUMBER = '\xA4' + ' P%s ' % 1
 SEQ_MAIN_LED_GREEN = '\x8B\x04\x00\xFF'
 
+# socket events
+COM_MOVE_UP = 'MOVE_UP'
+COM_MOVE_RIGHT = 'MOVE_RIGHT'
+COM_MOVE_DOWN = 'MOVE_DOWN'
+COM_MOVE_LEFT = 'MOVE_LEFT'
+COM_TILT_UP = 'TILT_UP'
+COM_PAN_RIGHT = 'PAN_RIGHT'
+COM_TILT_DOWN = 'TILT_DOWN'
+COM_PAN_LEFT = 'PAN_LEFT'
+COM_EXIT = 'EXIT'
+COM_FIRE = 'FIRE'
+
 # roomba move sequences
 SEQ_MOVE_UP = '\x89\x00\xFA\x80\x00' # move straight @ 250 mm/s
 SEQ_MOVE_DOWN = '\x89\xFF\x06\x80\x00' # move straight @ -250 mm/s
