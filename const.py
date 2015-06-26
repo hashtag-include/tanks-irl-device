@@ -17,8 +17,9 @@ SEQ_STOP = [173]
 SEQ_MODE_SAFE = [132]
 
 # misc roomba sequences
-SEQ_PLAYER_NUMBER = '\xA4' + ' P%s ' % 1
-SEQ_MAIN_LED_GREEN = '\x8B\x04\x00\xFF'
+SEQ_LCD_PREFIX = '\xA4'
+SEQ_MAIN_LED_GREEN = '\x8B\x04\x00\x80'
+SEQ_MAIN_LED_RED = '\x8B\x04\xFF\x80'
 
 # socket events
 COM_MOVE_UP = 'MOVE_UP'

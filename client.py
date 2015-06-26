@@ -33,17 +33,18 @@ def parse_args(argv):
             production = True
     return (roombaPort, production)
 
-def id_generator(size = 4, chars = string.ascii_uppercase + string.digits):
+def id_generator(size = 4, chars = string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
 def update_id():
     global tankId
     tankId = id_generator()
+    ser.write(const.SEQ_LCD_PREFIX + tankId) # write the player string to the LCD
+    ser.write(const.SEQ_MAIN_LED_RED) # change the home LED color to red
     socket.emit('client-connect', {'id': tankId, 'type': 'tank'})
 
 def move(command):
     print(command)
-    return
     if command == 'MOVE_UP':
         ser.write(const.SEQ_MOVE_UP)
     elif command == 'MOVE_RIGHT':
@@ -54,7 +55,7 @@ def move(command):
         ser.write(const.SEQ_MOVE_LEFT)
     else:
         return
-    time.sleep(.1)
+    time.sleep(.2)
     ser.write(const.SEQ_MOVE_STOP)
 
 # @TODO
@@ -64,6 +65,8 @@ def aim(command):
 # event when exit command is issued
 def exit(command):
     print(command)
+    ser.write(const.SEQ_LCD_PREFIX + '    ') # clear the LCD screen
+    ser.write(const.SEQ_MAIN_LED_GREEN) # change the home LED color to green
     ser.write(const.SEQ_STOP)
     time.sleep(1)
     ser.close() # close the serial connection
@@ -112,10 +115,6 @@ def main(argv):
     ser.write(const.SEQ_START) # start
     time.sleep(1)
     ser.write(const.SEQ_MODE_SAFE) # enter safe mode
-    time.sleep(0.2)
-
-    ser.write(const.SEQ_PLAYER_NUMBER) # write the player string to the LCD
-    ser.write(const.SEQ_MAIN_LED_GREEN) # change the home LED color to green
     time.sleep(0.2)
 
     socketIO = SocketIO(const.PROD_SERVER_HOST, const.PROD_SERVER_PORT, CommandControl, verify = False) if production else SocketIO(const.DEV_SERVER_HOST, const.DEV_SERVER_PORT, CommandControl)
