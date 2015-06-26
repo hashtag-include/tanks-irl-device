@@ -6,6 +6,8 @@ import const
 import sys
 import getopt
 import time
+import random
+import string
 
 # parses the command line arguements into variables. example of valid roombaPorts: '/dev/ttyUSB0' and 'COM5'
 def parse_args(argv):
@@ -31,33 +33,71 @@ def parse_args(argv):
             production = True
     return (roombaPort, production)
 
-# events in the CommandControl namespace
-class CommandControl(BaseNamespace):
-    def on_connect(self):
-        print('[Connection Established]')
+def id_generator(size = 4, chars = string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
 
-# event when move command is issued
-def on_move(self, *args):
-    print(self)
-    if self == 'UP':
+def update_id():
+    global tankId
+    tankId = id_generator()
+    socket.emit('client-connect', {'id': tankId, 'type': 'tank'})
+
+def move(command):
+    print(command)
+    return
+    if command == 'MOVE_UP':
         ser.write(const.SEQ_MOVE_UP)
-    elif self == 'DOWN':
-        ser.write(const.SEQ_MOVE_DOWN)
-    elif self == 'LEFT':
-        ser.write(const.SEQ_MOVE_LEFT)
-    elif self == 'RIGHT':
+    elif command == 'MOVE_RIGHT':
         ser.write(const.SEQ_MOVE_RIGHT)
+    elif command == 'MOVE_DOWN':
+        ser.write(const.SEQ_MOVE_DOWN)
+    elif command == 'MOVE_LEFT':
+        ser.write(const.SEQ_MOVE_LEFT)
     else:
         return
     time.sleep(.1)
     ser.write(const.SEQ_MOVE_STOP)
 
+# @TODO
+def aim(command):
+    print(command)
+
 # event when exit command is issued
-def on_exit(self, *args):
+def exit(command):
+    print(command)
     ser.write(const.SEQ_STOP)
     time.sleep(1)
     ser.close() # close the serial connection
     sys.exit(1)
+
+# @TODO
+def fire(command):
+    print(command)
+
+# events in the CommandControl namespace
+class CommandControl(BaseNamespace):
+    def on_connect(self):
+        print('[Connection Established]')
+        global socket
+        socket = self
+        update_id()
+
+# event when command is issued
+def on_command(self, *args):
+    # command issued to the correct player
+    if(self['player']['id'] == tankId):
+        if(self['command'] in ('MOVE_UP', 'MOVE_RIGHT', 'MOVE_DOWN', 'MOVE_LEFT')):
+            move(self['command'])
+        elif(self['command'] in ('TILT_UP', 'PAN_RIGHT', 'TILT_DOWN', 'PAN_LEFT')):
+            aim(self['command'])
+        elif(self['command'] == 'EXIT'):
+            exit(self['command'])
+        elif(self['command'] == 'FIRE'):
+            fire(self['command'])
+
+def on_client_disconnect(self, *args):
+    if self['type'] == 'controller':
+        if self['id'] == tankId:
+            update_id()
 
 def main(argv):
     (roombaPort, production) = parse_args(argv)
@@ -80,8 +120,8 @@ def main(argv):
 
     socketIO = SocketIO(const.PROD_SERVER_HOST, const.PROD_SERVER_PORT, CommandControl, verify = False) if production else SocketIO(const.DEV_SERVER_HOST, const.DEV_SERVER_PORT, CommandControl)
     
-    socketIO.on('MOVE', on_move)
-    socketIO.on('EXIT', on_exit)
+    socketIO.on('command', on_command)
+    socketIO.on('client-disconnect', on_client_disconnect)
     socketIO.wait()
 
 if __name__ == "__main__":
