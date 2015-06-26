@@ -55,7 +55,7 @@ def move(command):
         ser.write(const.SEQ_MOVE_LEFT)
     else:
         return
-    time.sleep(.2)
+    time.sleep(.15)
     ser.write(const.SEQ_MOVE_STOP)
 
 # @TODO
