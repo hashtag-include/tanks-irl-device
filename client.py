@@ -95,24 +95,74 @@ class CommandControl(BaseNamespace):
 
 # event when command is issued
 def on_command(self, *args):
-    # command issued to the correct player
-    if(self['player']['id'] == tankId):
-        if(self['command'] in (const.COM_MOVE_UP, const.COM_MOVE_RIGHT, const.COM_MOVE_DOWN, const.COM_MOVE_LEFT)):
-            move(self['command'])
-        elif(self['command'] in (const.COM_TILT_UP, const.COM_PAN_RIGHT, const.COM_TILT_DOWN, const.COM_PAN_LEFT)):
-            aim(self['command'])
-        elif(self['command'] == const.COM_EXIT):
-            exit(self['command'])
-        elif(self['command'] == const.COM_FIRE):
-            fire(self['command'])
+    try:
+        # command issued to the correct player
+        if(self['player']['id'] == tankId):
+            if(self['command'] in (const.COM_MOVE_UP, const.COM_MOVE_RIGHT, const.COM_MOVE_DOWN, const.COM_MOVE_LEFT)):
+                move(self['command'])
+            elif(self['command'] in (const.COM_TILT_UP, const.COM_PAN_RIGHT, const.COM_TILT_DOWN, const.COM_PAN_LEFT)):
+                aim(self['command'])
+            elif(self['command'] == const.COM_EXIT):
+                exit(self['command'])
+            elif(self['command'] == const.COM_FIRE):
+                fire(self['command'])
+    except SerialException, e:
+        print("should reconnect, due to %s" % e)
+	    reconnect_hack()
 
 def on_client_disconnect(self, *args):
     if self['type'] == 'controller':
         if self['id'] == tankId:
             update_id()
 
+def reconnect_hack():
+    global launcher_port
+    global launcher
+    real_port = int(launcher_port[-1])
+    time.sleep(1)
+    
+    isSet = False
+    for port in range(real_port-2, real_port+2):
+        try:
+            test_port = launcher_port[:-1] + str(port)
+            launcher = Serial(port = test_port, baudrate = const.LAUNCHER_BAUD_RATE, writeTimeout = None) # open serial connection to launcher
+            launcher_port = test_port
+            print("launcher now on %s" % launcher_port)
+            isSet = True
+        except (OSError, SerialException):
+            pass
+    if (not isSet):
+        print("failed to reconnect launcher")
+        sys.exit(-2)
+
+    global roomba_port
+    global roomba
+    real_port = int(roomba_port[-1])
+    time.sleep(1)
+    
+    isSet = False
+    for port in range(real_port-2, real_port+2):
+        try:
+            test_port = roomba_port[:-1] + str(port)
+            roomba = Serial(port = test_port, baudrate = const.ROOMBA_BAUD_RATE) # open serial connection to roomba
+            roomba_port = test_port
+            print("roomba now on %s" % roomba_port)
+            isSet = True
+        except (OSError, SerialException):
+            pass
+    if (not isSet):
+        print("failed to reconnect roomba")
+        sys.exit(-2)
+
 def main(argv):
     (roombaPort, launcherPort, production) = parse_args(argv)
+
+    global launcher_port
+    launcher_port = launcherPort
+    print("launcher on port %s" % launcher_port)
+    global roomba_port
+    roomba_port = roombaPort
+    print("roomba on port %s" % roomba_port)
 
     global roomba # define roomba as unscoped global variable
     global launcher # define launcher as unscoped global variable
