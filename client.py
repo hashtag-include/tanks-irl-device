@@ -108,7 +108,7 @@ def on_command(self, *args):
                 fire(self['command'])
     except SerialException, e:
         print("should reconnect, due to %s" % e)
-	    reconnect_hack()
+        reconnect_hack()
 
 def on_client_disconnect(self, *args):
     if self['type'] == 'controller':
