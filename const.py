@@ -5,8 +5,8 @@
 # socket server
 DEV_SERVER_HOST = 'http://localhost'
 DEV_SERVER_PORT = 1337
-PROD_SERVER_HOST = 'https://tanks-irl.azurewebsites.net'
-PROD_SERVER_PORT = 443
+PROD_SERVER_HOST = 'http://tanks-irl.azurewebsites.net'
+PROD_SERVER_PORT = 80
 
 # baudrate constants
 ROOMBA_BAUD_RATE = 115200
